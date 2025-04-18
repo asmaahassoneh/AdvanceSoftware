@@ -1,34 +1,29 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const con = require('../config/db'); 
-const validator = require('validator'); 
+const authService = require('../services/authService');
+const con = require('../config/db');
 
 const registerUser = async (req, res) => {
     const { name, email, phone, address, password, role } = req.body;
 
-    if (!validator.isEmail(email)) {
+    if (!authService.isValidEmail(email)) {
       return res.status(400).json({ 
           error: 'Invalid email format', 
           success: false 
       });
-  }
+    }
 
-  if (password.length < 6) {
+    if (!password || password.length < 6) {
       return res.status(400).json({ 
           error: 'Password must be at least 6 characters long', 
           success: false 
       });
-  }
-    if (!password) {
-        return res.status(400).json({ error: "Password is required" });
     }
-    
+
     try {
       const existingUser = await con.query('SELECT * FROM users WHERE email = $1', [email]);
         if (existingUser.rows.length > 0) {
             return res.status(400).json({ error: "User already exists with this email" });
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await authService.hashPassword(password);
         const insertQry = `INSERT INTO users (name, email, phone, address, password_hash, role)
                            VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`;
         const result = await con.query(insertQry, [name, email, phone, address, hashedPassword, role]);
@@ -38,7 +33,6 @@ const registerUser = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
-
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -50,16 +44,15 @@ const loginUser = async (req, res) => {
       }
 
       const user = result.rows[0];
-      const isMatch = await bcrypt.compare(password, user.password_hash);
+      const isMatch = await authService.comparePassword(password, user.password_hash);
       if (!isMatch) {
           return res.status(401).json({ error: 'Invalid email or password' });
       }
       await con.query('UPDATE users SET status = $1 WHERE email = $2', ['online', email]);
 
-      const token = jwt.sign(
+      const token = authService.generateToken(
           { id: user.id, role: user.role },
-          process.env.JWT_SECRET,
-          { expiresIn: '2h' }
+          '2h'
       );
       delete user.password_hash;
 
@@ -88,7 +81,7 @@ const resetPassword = async (req, res) => {
           return res.status(404).json({ error: 'User not found' });
       }
 
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const hashedPassword = await authService.hashPassword(newPassword);
       const updateQry = 'UPDATE users SET password_hash = $1 WHERE email = $2 RETURNING *;';
       const updatedUser = await con.query(updateQry, [hashedPassword, email]);
 
@@ -118,5 +111,4 @@ const logoutUser = async (req, res) => {
   }
 };
 
-
-module.exports = { registerUser, loginUser, resetPassword, logoutUser};
+module.exports = { registerUser, loginUser, resetPassword, logoutUser };
