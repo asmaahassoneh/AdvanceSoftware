@@ -76,22 +76,22 @@ const loginUser = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  const { token, newPassword } = req.body;
+  const { email, newPassword } = req.body;
+
   if (!newPassword || newPassword.length < 6) {
       return res.status(400).json({ error: 'Password must be at least 6 characters long' });
   }
 
   try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const result = await con.query('SELECT * FROM users WHERE id = $1', [decoded.id]);
+      const result = await con.query('SELECT * FROM users WHERE email = $1', [email]);
       if (result.rows.length === 0) {
           return res.status(404).json({ error: 'User not found' });
       }
 
-      const user = result.rows[0];
       const hashedPassword = await bcrypt.hash(newPassword, 10);
-      const updateQry = 'UPDATE users SET password_hash = $1 WHERE id = $2 RETURNING *;';
-      const updatedUser = await con.query(updateQry, [hashedPassword, user.id]);
+      const updateQry = 'UPDATE users SET password_hash = $1 WHERE email = $2 RETURNING *;';
+      const updatedUser = await con.query(updateQry, [hashedPassword, email]);
+
       res.json({ message: 'Password reset successful', user: updatedUser.rows[0] });
   } catch (err) {
       console.error('Error during password reset:', err);
@@ -100,15 +100,13 @@ const resetPassword = async (req, res) => {
 };
 
 const logoutUser = async (req, res) => {
-  const { token } = req.body;
+  const { email } = req.body;
 
-  if (!token) {
-    return res.status(400).json({ error: "No token provided" });
+  if (!email) {
+    return res.status(400).json({ error: "Email is required for logout" });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const email = decoded.email;  
     const updateQuery = 'UPDATE users SET status = $1 WHERE email = $2';
     await con.query(updateQuery, ['offline', email]);
 
@@ -119,7 +117,6 @@ const logoutUser = async (req, res) => {
     res.status(500).json({ error: 'Server error during logout' });
   }
 };
-
 
 
 module.exports = { registerUser, loginUser, resetPassword, logoutUser};
