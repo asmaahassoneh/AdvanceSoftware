@@ -29,29 +29,6 @@ const registerOrphan = async (req, res) => {
         res.status(500).json({ error: 'Failed to add orphan' });
     }
 };
-
-const getAllOrphans = async (req, res) => {
-    try {
-      const result = await con.query('SELECT * FROM orphans');
-      res.json(result.rows);
-    } catch (err) {
-      console.error('Get All Orphans Error:', err);
-      res.status(500).json({ error: 'Server error' });
-    }
-  };
-  
-  const getOrphanById = async (req, res) => {
-    try {
-      const result = await con.query('SELECT * FROM orphans WHERE id = $1', [req.params.id]);
-      if (!result.rows[0]) {
-        return res.status(404).json({ error: 'Orphan not found' });
-      }
-      res.json(result.rows[0]);
-    } catch (err) {
-      console.error('Get Orphan Error:', err);
-      res.status(500).json({ error: 'Server error' });
-    }
-  };
   
   const updateOrphan = async (req, res) => {
     const { name, age, health_status, education_status, photo_url, orphanage_name } = req.body;
@@ -136,7 +113,6 @@ const addReport = async (req, res) => {
         `;
         const values = [orphan_id, update_type, content, photo_url || null]; 
 
-        // Fix the issue: Use `reportQry` instead of `query`
         const result = await con.query(reportQry, values); 
 
         res.status(201).json({ message: 'Report added successfully', report: result.rows[0] });
@@ -149,31 +125,9 @@ const addReport = async (req, res) => {
     }
 };
 
-
-const getReport = async (req, res) => {
-    try {
-      const orphanName = req.params.name; 
-      const query = `
-        SELECT cu.*
-        FROM child_updates cu
-        JOIN orphans o ON cu.orphan_id = o.id
-        WHERE o.name = $1
-        ORDER BY cu.created_at DESC;
-      `;
-      const result = await con.query(query, [orphanName]); 
-      res.json(result.rows); 
-    } catch (err) {
-      console.error('Get Report Error:', err);
-      res.status(500).json({ error: 'Server error' });
-    }
-  };
-
   module.exports = {
     registerOrphan,
-    getAllOrphans,
-    getOrphanById,
     updateOrphan,
     deleteOrphan,
     addReport,
-    getReport,
   };
