@@ -7,5 +7,12 @@ app.use(express.json());
 app.listen(3000, () => {
     console.log("Server is running.....")
 });
-const authRoutes = require('./routes/auth');
-app.use('/auth', authRoutes); 
+
+const routes = require('./routes/allRoutes');
+app.use(routes);
+
+// const authRoutes = require('./routes/auth');
+// app.use('/auth', authRoutes); 
+
+// const orphanRoutes = require('./routes/orphanRoutes');
+// app.use('/orphans', orphanRoutes);
