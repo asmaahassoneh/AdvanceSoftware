@@ -1,15 +1,11 @@
-const jwt = require('jsonwebtoken');
 const con = require('../config/db');  
-
-const JWT_SECRET = process.env.JWT_SECRET;
-
+const { getUserRole } = require('../services/authService');
 
 const registerOrphan = async (req, res) => {
     const { name, age, health_status, education_status, photo_url, orphanage_name } = req.body;
 
     try {
-        const decoded = jwt.verify(req.header('Authorization')?.replace('Bearer ', ''), JWT_SECRET);
-        const { role } = decoded;
+        const role = getUserRole(req);
 
         if (role !== 'admin') {
             return res.status(403).json({ error: 'Only admins can add an orphan.' });
@@ -57,8 +53,7 @@ const getAllOrphans = async (req, res) => {
     const { name, age, health_status, education_status, photo_url, orphanage_name } = req.body;
 
     try {
-        const decoded = jwt.verify(req.header('Authorization')?.replace('Bearer ', ''), JWT_SECRET);
-        const { role } = decoded;
+      const role = getUserRole(req);
 
         if (role !== 'admin') {
             return res.status(403).json({ error: 'Only admins can update an orphan.' });
@@ -85,8 +80,7 @@ const getAllOrphans = async (req, res) => {
 
 const deleteOrphan = async (req, res) => {
     try {
-        const decoded = jwt.verify(req.header('Authorization')?.replace('Bearer ', ''), JWT_SECRET);
-        const { role } = decoded;
+      const role = getUserRole(req);
 
         if (role !== 'admin') {
             return res.status(403).json({ error: 'Only admins can delete an orphan.' });
@@ -109,64 +103,64 @@ const deleteOrphan = async (req, res) => {
     }
 };
 
-const addReport = async (req, res) => {
-    const { update_type, content, photo_url } = req.body;
-    const orphan_id = req.params.id;
+// const addReport = async (req, res) => {
+//     const { update_type, content, photo_url } = req.body;
+//     const orphan_id = req.params.id;
 
-    if (!orphan_id || !update_type || !content) {
-        return res.status(400).json({ error: 'Orphan ID, update type, and content are required' });
-    }
+//     if (!orphan_id || !update_type || !content) {
+//         return res.status(400).json({ error: 'Orphan ID, update type, and content are required' });
+//     }
 
-    const validUpdateTypes = ['photo', 'progress', 'medical'];
-    if (!validUpdateTypes.includes(update_type)) {
-        return res.status(400).json({ error: 'Invalid update type. Valid types are: photo, progress, medical.' });
-    }
+//     const validUpdateTypes = ['photo', 'progress', 'medical'];
+//     if (!validUpdateTypes.includes(update_type)) {
+//         return res.status(400).json({ error: 'Invalid update type. Valid types are: photo, progress, medical.' });
+//     }
 
-    try {
-        const decoded = jwt.verify(req.header('Authorization')?.replace('Bearer ', ''), JWT_SECRET);
-        const { role } = decoded;
+//     try {
+//         const decoded = jwt.verify(req.header('Authorization')?.replace('Bearer ', ''), JWT_SECRET);
+//         const { role } = decoded;
 
-        if (role !== 'admin') {
-            return res.status(403).json({ error: 'Only admins can add reports.' });
-        }
+//         if (role !== 'admin') {
+//             return res.status(403).json({ error: 'Only admins can add reports.' });
+//         }
 
-        const reportQry = `
-            INSERT INTO child_updates (orphan_id, update_type, content, photo_url)
-            VALUES ($1, $2, $3, $4) RETURNING *;
-        `;
-        const values = [orphan_id, update_type, content, photo_url || null]; 
+//         const reportQry = `
+//             INSERT INTO child_updates (orphan_id, update_type, content, photo_url)
+//             VALUES ($1, $2, $3, $4) RETURNING *;
+//         `;
+//         const values = [orphan_id, update_type, content, photo_url || null]; 
 
-        // Fix the issue: Use `reportQry` instead of `query`
-        const result = await con.query(reportQry, values); 
+//         // Fix the issue: Use `reportQry` instead of `query`
+//         const result = await con.query(reportQry, values); 
 
-        res.status(201).json({ message: 'Report added successfully', report: result.rows[0] });
-    } catch (err) {
-        console.error('Error:', err);
-        if (err.name === 'JsonWebTokenError') {
-            return res.status(401).json({ error: 'Invalid token. Please log in.' });
-        }
-        res.status(500).json({ error: 'Failed to add report' });
-    }
-};
+//         res.status(201).json({ message: 'Report added successfully', report: result.rows[0] });
+//     } catch (err) {
+//         console.error('Error:', err);
+//         if (err.name === 'JsonWebTokenError') {
+//             return res.status(401).json({ error: 'Invalid token. Please log in.' });
+//         }
+//         res.status(500).json({ error: 'Failed to add report' });
+//     }
+// };
 
 
-const getReport = async (req, res) => {
-    try {
-      const orphanName = req.params.name; 
-      const query = `
-        SELECT cu.*
-        FROM child_updates cu
-        JOIN orphans o ON cu.orphan_id = o.id
-        WHERE o.name = $1
-        ORDER BY cu.created_at DESC;
-      `;
-      const result = await con.query(query, [orphanName]); 
-      res.json(result.rows); 
-    } catch (err) {
-      console.error('Get Report Error:', err);
-      res.status(500).json({ error: 'Server error' });
-    }
-  };
+// const getReport = async (req, res) => {
+//     try {
+//       const orphanName = req.params.name; 
+//       const query = `
+//         SELECT cu.*
+//         FROM child_updates cu
+//         JOIN orphans o ON cu.orphan_id = o.id
+//         WHERE o.name = $1
+//         ORDER BY cu.created_at DESC;
+//       `;
+//       const result = await con.query(query, [orphanName]); 
+//       res.json(result.rows); 
+//     } catch (err) {
+//       console.error('Get Report Error:', err);
+//       res.status(500).json({ error: 'Server error' });
+//     }
+//   };
 
   module.exports = {
     registerOrphan,
@@ -174,6 +168,4 @@ const getReport = async (req, res) => {
     getOrphanById,
     updateOrphan,
     deleteOrphan,
-    addReport,
-    getReport,
   };
