@@ -22,7 +22,7 @@ const registerOrphan = async (req, res) => {
         if (err.name === 'JsonWebTokenError') {
             return res.status(401).json({ error: 'Invalid token. Please log in.' });
         }
-        res.status(500).json({ error: 'Failed to add orphan' });
+        res.status(500).json({ error: err.message  });
     }
 };
 
@@ -45,7 +45,7 @@ const getAllOrphans = async (req, res) => {
       res.json(result.rows[0]);
     } catch (err) {
       console.error('Get Orphan Error:', err);
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ error: err.message  });
     }
   };
   
@@ -74,7 +74,7 @@ const getAllOrphans = async (req, res) => {
         if (err.name === 'JsonWebTokenError') {
             return res.status(401).json({ error: 'Invalid token. Please log in.' });
         }
-        res.status(500).json({ error: 'Failed to update orphan' });
+        res.status(500).json({ error: err.message });
     }
 };
 
@@ -99,7 +99,7 @@ const deleteOrphan = async (req, res) => {
         if (err.name === 'JsonWebTokenError') {
             return res.status(401).json({ error: 'Invalid token. Please log in.' });
         }
-        res.status(500).json({ error: 'Failed to delete orphan' });
+        res.status(500).json({ error: err.message  });
     }
 };
 

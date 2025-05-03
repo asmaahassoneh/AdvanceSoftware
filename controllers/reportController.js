@@ -143,9 +143,11 @@ const getReport = async (req, res) => {
       res.status(200).json(result.rows);
     } catch (err) {
       console.error('Show All Reports Error:', err.message);
-      res.status(500).json({ error: 'Failed to retrieve reports' });
+      res.status(500).json({ error: err.message  });
     }
   };
+
+
 
   module.exports = {
     addReport,

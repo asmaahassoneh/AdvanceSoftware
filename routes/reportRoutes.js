@@ -1,12 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const reportController = require('../controllers/reportController');
+const childReportController = require('../controllers/reportController');
+const pdfReportController = require('../controllers/pdfReportController');
 
-router.post('/WriteReport', reportController.addReport); 
-router.put('/:id', reportController.updateReport);     
-router.delete('/:id', reportController.deleteReport); 
-router.get('/:name', reportController.getReport); 
-router.get('', reportController.showAllReports); 
+//PDF Report 
+router.get('/userSummary', pdfReportController.createUserSummaryReport); 
+router.get('/orphanageSummary', pdfReportController.createOrphanageReport);
+router.get('/orphanSummary', pdfReportController.createOrphanStatisticsReport);
+router.get('/SponsorshipSummary', pdfReportController.createSponsorshipReport);
+
+//Child Report
+router.post('/WriteReport', childReportController.addReport); 
+router.put('/:id', childReportController.updateReport);     
+router.delete('/:id', childReportController.deleteReport); 
+router.get('/:name', childReportController.getReport); 
+router.get('', childReportController.showAllReports); 
+
 
 module.exports = router;
 

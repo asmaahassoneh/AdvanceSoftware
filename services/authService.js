@@ -6,6 +6,14 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const isValidEmail = (email) => validator.isEmail(email);
 
+const checkAdmin = (req, res) => {
+  const role = getUserRole(req);
+  if (role !== 'admin') {
+    res.status(403).json({ message: 'Access denied' });
+    return false;
+  }
+  return true;
+};
 const getUserRole = (req) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) throw new Error('Missing token');
@@ -50,4 +58,5 @@ module.exports = {
   verifyToken,
   getUserRole,
   getUserId,
+  checkAdmin,
 };

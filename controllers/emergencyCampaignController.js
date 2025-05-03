@@ -52,7 +52,7 @@ const createCampaign = async (req, res) => {
     res.status(201).json({ campaign: result.rows[0] });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to create campaign' });
+    res.status(500).json({ error: err.message  });
   }
 };
 
@@ -62,7 +62,7 @@ const getAllCampaigns = async (req, res) => {
     res.json({ campaigns: result.rows });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to fetch campaigns' });
+    res.status(500).json({ error: err.message });
   }
 };
 
