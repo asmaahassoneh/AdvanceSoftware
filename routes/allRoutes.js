@@ -5,5 +5,7 @@ router.use('/auth',    require('./authRoutes'));
 router.use('/orphans', require('./orphanRoutes'));
 router.use('/reports', require('./reportRoutes'));
 router.use('/orphanage', require('./orphanagesRoutes'));
+router.use('/sponsor', require('./sponsorOrphanRoutes'));
+router.use('/emergency', require('./emergencyCampaignsRoutes'));
 
 module.exports = router;

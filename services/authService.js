@@ -5,12 +5,21 @@ const validator = require('validator');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const isValidEmail = (email) => validator.isEmail(email);
+
 const getUserRole = (req) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) throw new Error('Missing token');
   const decoded = jwt.verify(token, JWT_SECRET);
   return decoded.role;
 };
+
+const getUserId = (req) => {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  if (!token) throw new Error('Missing token');
+  const decoded = jwt.verify(token, JWT_SECRET);
+  return decoded.id;
+};
+
 
 const hashPassword = async (password) => {
   return await bcrypt.hash(password, 10);
@@ -40,4 +49,5 @@ module.exports = {
   generateToken,
   verifyToken,
   getUserRole,
+  getUserId,
 };

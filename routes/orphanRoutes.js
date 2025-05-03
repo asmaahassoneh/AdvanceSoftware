@@ -8,8 +8,6 @@ router.get('/:id', orphanController.getOrphanById);
 router.put('/:id', orphanController.updateOrphan);     
 router.delete('/:id', orphanController.deleteOrphan); 
 
-// router.post('/:id/reports', orphanController.addReport); 
-// router.get('/reports/:name', orphanController.getReport); 
 module.exports = router;
 
 

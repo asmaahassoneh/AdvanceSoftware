@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/emergencyCampaignController');
+const emergencyCampaignController = require('../controllers/emergencyCampaignController');
 
-router.post('/create', controller.createCampaign);
-router.get('/', controller.getAllCampaigns);
-router.post('/contribute', controller.contributeToCampaign);
-router.post('/notify', controller.notifyDonors);
+router.post('/create', emergencyCampaignController.createCampaign);
+router.get('/', emergencyCampaignController.getAllCampaigns);
+router.post('/contribute', emergencyCampaignController.contributeToCampaign);
 
 module.exports = router;
