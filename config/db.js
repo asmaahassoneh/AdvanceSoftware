@@ -6,7 +6,7 @@ const con = new Client({
     host: "localhost",
     user: "postgres",
     port: 5433,
-    password: "2004",
+    password: "12345",
     database: "HopeConnectDataBase"
 });
 
