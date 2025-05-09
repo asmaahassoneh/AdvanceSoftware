@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const donationController = require('../controllers/donationController');
-const auth = require('../services/authMiddlewear'); // ✅ Correct path
+const auth = require('../services/authMiddlewear'); 
 
 router.post('/', auth, donationController.createDonation);
 router.get('/', auth, donationController.getUserDonations);
