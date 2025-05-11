@@ -3,20 +3,20 @@ const db = require('../config/db');
 // POST /api/donations
 exports.createDonation = async (req, res) => {
   try {
-    const { type, amount, description } = req.body;
-    const donorId = req.user.id; // assuming auth middleware adds this
+    const { type, amount, description, location } = req.body;
+    const donorId = req.user.id;
 
     if (!type || (type === 'money' && (!amount || amount <= 0))) {
       return res.status(400).json({ message: 'Invalid donation data' });
     }
 
     const query = `
-      INSERT INTO donations (donor_id, type, amount, description, created_at)
-      VALUES ($1, $2, $3, $4, NOW())
+      INSERT INTO donations (donor_id, type, amount, description, location, created_at)
+      VALUES ($1, $2, $3, $4, $5, NOW())
       RETURNING *;
     `;
 
-    const values = [donorId, type, amount || null, description || null];
+    const values = [donorId, type, amount || null, description || null, location || null];
     const result = await db.query(query, values);
 
     res.status(201).json(result.rows[0]);
