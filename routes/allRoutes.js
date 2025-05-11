@@ -5,6 +5,8 @@ router.use('/auth',    require('./authRoutes'));
 router.use('/orphans', require('./orphanRoutes'));
 router.use('/reports', require('./reportRoutes'));
 router.use('/orphanage', require('./orphanagesRoutes'));
+router.use('/donations', require('./donationRoutes'));
+router.use('/logistics', require('./logistics'));
 router.use('/sponsor', require('./sponsorOrphanRoutes'));
 router.use('/emergency', require('./emergencyCampaignsRoutes'));
 router.use('/donor', require('./donorRoutes'));
