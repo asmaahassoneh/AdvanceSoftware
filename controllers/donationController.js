@@ -1,6 +1,5 @@
 const db = require('../config/db');
 
-// POST /api/donations
 exports.createDonation = async (req, res) => {
   try {
     const { type, amount, description, location } = req.body;
@@ -26,7 +25,7 @@ exports.createDonation = async (req, res) => {
   }
 };
 
-// GET /api/donations
+
 exports.getUserDonations = async (req, res) => {
   try {
     const donorId = req.user.id;
