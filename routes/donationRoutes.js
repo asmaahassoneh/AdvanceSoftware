@@ -7,4 +7,3 @@ router.post('/', auth, donationController.createDonation);
 router.get('/', auth, donationController.getUserDonations);
 
 module.exports = router;
-   
