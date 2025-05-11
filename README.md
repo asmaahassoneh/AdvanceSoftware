@@ -1,4 +1,4 @@
-Welcome to HopeConnect 🌍
+<!-- Welcome to HopeConnect 🌍
 HopeConnect is a backend API developed to support a humanitarian platform focused on aiding orphaned children in Gaza after the war. This system connects donors, sponsors, and volunteers with verified orphanages and children in need. The project ensures transparency, security, and efficient resource management to make sure help reaches those who need it most.
 
 Features
@@ -92,4 +92,4 @@ Since the Geocoding and Routing APIs are paid services, we simulated them using 
 - Chart.js 
 - PDFKit, Axios 
 - VsCode
-- Github
+- Github -->

@@ -1,4 +1,4 @@
-# 🌍 Welcome to HopeConnect
+<!-- # 🌍 Welcome to HopeConnect
 
 **HopeConnect** is a backend API designed to power a humanitarian platform focused on supporting orphaned children in Gaza after the war. It connects donors, sponsors, and volunteers with verified orphanages and children in need. The platform emphasizes transparency, data security, and efficient resource distribution to ensure that support reaches those who need it most.
 
@@ -102,4 +102,4 @@ Usage: Nodemailer is used to send verification emails upon user registration, no
 - VsCode
 - Github
 
----
+--- -->
