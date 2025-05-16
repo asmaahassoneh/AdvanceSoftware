@@ -3,11 +3,11 @@ const { Client } = require('pg');
 const express = require('express');
 
 const con = new Client({
-    host: "localhost",
-    user: "postgres",
-    port: 5433,
-    password: "12345",
-    database: "HopeConnectDataBase"
+    host: process.env.HOST,
+    user: process.env.DB_USER,
+    port: process.env.DB_PORT,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME
 });
 
 
