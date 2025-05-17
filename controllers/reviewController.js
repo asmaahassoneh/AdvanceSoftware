@@ -74,7 +74,7 @@ const getReviewsForOrphanage = async (req, res) => {
       [orphanage_id]
     );
 
-    res.status(200).json({ reviews: result.rows });
+    res.status(404).json({ error: 'Orphanage not found' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
@@ -90,8 +90,9 @@ const getAverageRating = async (req, res) => {
       );
   
       if (!orphanageRes.rows.length) {
-        return res.status(404).json({ error: err.message });
+        return res.status(404).json({ error: 'Orphanage not found' });
       }
+  
   
       const orphanage_id = orphanageRes.rows[0].id;
   
@@ -106,6 +107,7 @@ const getAverageRating = async (req, res) => {
         orphanage: orphanage_name,
         average_rating: ratingRes.rows[0].average_rating || 0,
       });
+      
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: err.message });
