@@ -20,4 +20,8 @@ router.use('/chatbot', require('./chatRoutes'));
 router.use('/donor', require('./donorRoutes'));
 router.use('/account', require('./accountRoutes'));
 
+router.use('/volunteer', require('./volunteerServiceRoutes')); 
+router.use('/helpRequests', require('./helpRequestRoutes'));
+router.use('/volunteer-matching', require('./volunteerMatchRoute'));
+
 module.exports = router;
