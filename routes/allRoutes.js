@@ -10,5 +10,9 @@ router.use('/emergency', require('./emergencyCampaignsRoutes'));
 router.use('/donor', require('./donorRoutes'));
 router.use('/account', require('./accountRoutes'));
 
+
+// raya's
 router.use('/volunteer', require('./volunteerServiceRoutes')); 
-module.exports = router;
+router.use('/helpRequests', require('./helpRequestRoutes'));
+router.use('/volunteer-matching', require('./volunteerMatchRoute'));
+module.exports = router; 
