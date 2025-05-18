@@ -14,6 +14,7 @@ router.use('/review', require('./reviewRoutes'));
 router.use('/partner', require('./partnerRoutes'));
 router.use('/transaction', require('./transactionRoutes'));
 router.use('/revenue', require('./revenueRoutes'));
+router.use('/chatbot', require('./chatRoutes'));
 
 
 router.use('/donor', require('./donorRoutes'));
