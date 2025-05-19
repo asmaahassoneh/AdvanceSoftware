@@ -1,5 +1,5 @@
 require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') }); 
-console.log('API Key:', process.env.HUGGINGFACE_API_KEY);  // For debugging (remove this in production)
+console.log('API Key:', process.env.HUGGINGFACE_API_KEY); 
 
 const axios = require('axios'); 
 
