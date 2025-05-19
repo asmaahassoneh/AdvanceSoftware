@@ -1,12 +1,12 @@
-const con = require('../config/db'); // your single Client instance, already connected
+const con = require('../config/db'); 
 
 exports.matchVolunteers = async (req, res) => {
   try {
     console.log('Starting volunteer matching...');
 
-    // No need to call con.connect() or con.release() because the client is already connected
+    
 
-    // Find all pending help requests
+   
     const { rows: helpRequests } = await con.query(`
       SELECT * FROM help_requests WHERE status = 'pending'
     `);
@@ -16,7 +16,7 @@ exports.matchVolunteers = async (req, res) => {
     for (const request of helpRequests) {
       const { id: helpRequestId, category } = request;
 
-      // Find all available volunteers with matching category
+      
       const { rows: matchingVolunteers } = await con.query(`
         SELECT * FROM volunteer_services 
         WHERE category = $1 AND available = true
@@ -25,7 +25,7 @@ exports.matchVolunteers = async (req, res) => {
       for (const volunteer of matchingVolunteers) {
         const volunteerId = volunteer.volunteer_id;
 
-        // Check if match already exists
+        
         const { rowCount: exists } = await con.query(`
           SELECT 1 FROM volunteer_matches 
           WHERE volunteer_id = $1 AND help_request_id = $2

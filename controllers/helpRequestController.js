@@ -1,6 +1,6 @@
 const con = require('../config/db');
 
-// 🔹 POST /helpRequests — Add a new help request
+
 const createHelpRequest = async (req, res) => {
     const { title, description, category, orphanage_id } = req.body;
     const { role } = req.user;
@@ -10,7 +10,7 @@ const createHelpRequest = async (req, res) => {
             return res.status(403).json({ error: 'Only orphanages or admins can post requests.' });
         }
 
-        // 🐛 DEBUGGING LOG
+        
         console.log('🛠 Creating help request with:', {
             orphanage_id,
             title,
@@ -25,7 +25,7 @@ const createHelpRequest = async (req, res) => {
 
         const result = await con.query(insertQry, [orphanage_id, title, description, category]);
 
-        console.log('✅ Help request inserted:', result.rows[0]);
+        console.log(' Help request inserted:', result.rows[0]);
 
         res.status(201).json({
             message: 'Help request created.',
@@ -33,13 +33,13 @@ const createHelpRequest = async (req, res) => {
         });
 
     } catch (err) {
-        console.error('❌ Create Help Request Error:', err);
+        console.error(' Create Help Request Error:', err);
         res.status(500).json({ error: err.detail || err.message || 'Unknown error' });
     }
 };
 
 
-// 🔹 GET /helpRequests/all — View all help requests (Admin only)
+
 const getAllHelpRequests = async (req, res) => {
     const { role } = req.user;
 
@@ -55,7 +55,7 @@ const getAllHelpRequests = async (req, res) => {
     }
 };
 
-// 🔹 PATCH /helpRequests/status/:id — Update request status (Admin only)
+
 const updateHelpRequestStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
@@ -84,20 +84,20 @@ const updateHelpRequestStatus = async (req, res) => {
     }
 };
 
-// 🔹 GET /helpRequests/orphanage/:name — Get help requests for a specific orphanage
+
 const getHelpRequestsByOrphanage = async (req, res) => {
     const { role, orphanage_id } = req.user;
     const requestedName = req.params.name;
 
     try {
-        // Find the orphanage id for the requested orphanage name
+       
         const orphanageRes = await con.query('SELECT id FROM orphanages WHERE name = $1', [requestedName]);
         if (orphanageRes.rows.length === 0) {
             return res.status(404).json({ error: 'Orphanage not found.' });
         }
         const requestedOrphanageId = orphanageRes.rows[0].id;
 
-        // Orphanages can only access their own requests
+       
         if (role === 'orphanage' && orphanage_id !== requestedOrphanageId) {
             return res.status(403).json({ error: 'Access denied to other orphanage data.' });
         }

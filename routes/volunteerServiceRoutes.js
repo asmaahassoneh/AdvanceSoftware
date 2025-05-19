@@ -3,7 +3,7 @@ const router = express.Router();
 const verifyToken = require('../middleware/verifyToken');
 const volunteerServiceController = require('../controllers/volunteerServiceController');
 
-// Route to offer a new service (volunteer must be authenticated)
+
 router.post('/offer', verifyToken, async (req, res) => {
   try {
     const volunteerId = req.user.id;
@@ -25,7 +25,6 @@ router.post('/offer', verifyToken, async (req, res) => {
   }
 });
 
-// Route to get all services offered by the logged-in volunteer
 router.get('/my-services', verifyToken, async (req, res) => {
   try {
     const volunteerId = req.user.id;

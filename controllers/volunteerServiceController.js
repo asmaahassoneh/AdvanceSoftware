@@ -1,7 +1,7 @@
-// controllers/volunteerServiceController.js
+
 const con = require('../config/db');
 
-// Function to offer a service
+
 const offerService = async (volunteerId, serviceType, description, available) => {
   const query = `
     INSERT INTO volunteer_services (volunteer_id, category, description, available)
@@ -9,24 +9,24 @@ const offerService = async (volunteerId, serviceType, description, available) =>
     RETURNING *;
   `;
   try {
-    // Execute the query to insert the new service
+    
     const result = await con.query(query, [volunteerId, serviceType, description, available]);
 
-    // Return the newly created service data
+   
     return result.rows[0];
   } catch (err) {
-  console.error('Error inserting service:', err); // Log full error!
-  throw err; // Re-throw to show actual DB or logic error
+  console.error('Error inserting service:', err); 
+  throw err; 
 }
 
 };
 
-// Function to get all services offered by a volunteer
+
 const getAllServices = async (volunteerId) => {
   const query = 'SELECT * FROM volunteer_services WHERE volunteer_id = $1;';
   try {
     const result = await con.query(query, [volunteerId]);
-    return result.rows; // Return all services offered by the volunteer
+    return result.rows; 
   } catch (err) {
     console.error('Error fetching services:', err);
     throw new Error('Failed to fetch services');
