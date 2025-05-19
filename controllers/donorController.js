@@ -30,10 +30,10 @@ const getDonorDashboard = async (req, res) => {
 
     // 3. Get financial transactions
     const transactions = await con.query(
-      `SELECT amount, transaction_type, status, created_at
+      `SELECT amount, type, status, date
        FROM transactions
-       WHERE user_id = $1
-       ORDER BY created_at DESC`,
+       WHERE donor_id = $1
+       ORDER BY date DESC`,
       [user_id]
     );
 

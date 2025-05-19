@@ -12,13 +12,21 @@ const createTransaction = async (req, res) => {
             return res.status(403).json({ error: 'Unauthorized to add a transaction.' });
         }
 
+        const feePercentage = 0.05; // 5% operational fee
+        const feeAmount = amount * feePercentage;
+        const netAmount = amount - feeAmount;
+
         const insertQry = `
             INSERT INTO transactions (amount, donor_id, orphan_id, partner_id, type, description, date)
             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`;
 
-        const result = await con.query(insertQry, [amount, donor_id, orphan_id, partner_id, type, description, date]);
+        const result = await con.query(insertQry, [netAmount, donor_id, orphan_id, partner_id, type, description, date]);
 
-        res.status(201).json({ message: 'Transaction created successfully', transaction: result.rows[0] });
+        res.status(201).json({ 
+            message: 'Transaction created successfully', 
+            transaction: result.rows[0],
+            feeCharged: feeAmount.toFixed(2) 
+        });
     } catch (err) {
         console.error('Create Transaction Error:', err);
         res.status(500).json({ error: err.message });
