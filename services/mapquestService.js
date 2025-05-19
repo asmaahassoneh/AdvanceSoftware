@@ -33,7 +33,7 @@ async function getDirections(fromLocation, orphanageId, db) {
     key: MAPQUEST_API_KEY,
     from: fromLocation,
     to: toLocation,
-    unit: 'k' // Use kilometers
+    unit: 'k' 
   };
 
   const response = await axios.get(url, { params });
@@ -42,13 +42,13 @@ async function getDirections(fromLocation, orphanageId, db) {
     throw new Error('MapQuest API error: ' + response.data.info.messages.join('; '));
   }
 
-  // Extract narratives from all maneuvers in all legs
+  
   const legs = response.data.route.legs;
   const narratives = legs.flatMap(leg =>
     leg.maneuvers.map(maneuver => maneuver.narrative)
   );
 
-  return narratives; // returns array of narrative strings only
+  return narratives; 
 }
 
 module.exports = { getCoordinates, getDirections };
