@@ -3,7 +3,7 @@ const router = express.Router();
 const partnerController = require('../controllers/partnerController');
 
 
-// All routes use auth middleware
+
 router.post('/',partnerController.createPartner);
 router.get('/', partnerController.getAllPartners);
 router.get('/:id',partnerController.getPartnerById);
