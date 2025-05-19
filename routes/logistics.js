@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const authMiddleware = require('../services/authMiddlewear'); 
-const { getCoordinates, getRoute } = require('../services/mapquestService');
+const { getCoordinates, getDirections } = require('../services/mapquestService');
 
 const getMapQuestLink = (latitude, longitude) => {
   return `https://www.mapquest.com/search/results?query=${latitude},${longitude}`;
@@ -40,24 +40,32 @@ router.get('/location/:id', authMiddleware, async (req, res) => {
   }
 });
 
-router.post('/pickup', async (req, res) => {
+// router.post('/pickup', async (req, res) => {
+//   try {
+//     const { address } = req.body;
+//     const coordinates = await getCoordinates(address);
+//     res.json({ message: 'Coordinates retrieved', coordinates });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message || 'Failed to geocode address' });
+//   }
+// });
+
+router.get('/:id', async (req, res) => {
+  const orphanageId = req.params.id;
+  const fromLocation = req.query.from;
+
+  if (!fromLocation) {
+    return res.status(400).json({ error: 'Missing "from" query parameter (user location).' });
+  }
+
   try {
-    const { address } = req.body;
-    const coordinates = await getCoordinates(address);
-    res.json({ message: 'Coordinates retrieved', coordinates });
+    const route = await getDirections(fromLocation, orphanageId, db);
+    res.json(route);
   } catch (err) {
-    res.status(500).json({ error: err.message || 'Failed to geocode address' });
+    console.error(err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 
-router.get('/route', async (req, res) => {
-  try {
-    const { from, to } = req.query;
-    const routeInfo = await getRoute(from, to);
-    res.json({ route: routeInfo });
-  } catch (err) {
-    res.status(500).json({ error: err.message || 'Failed to get route' });
-  }
-});
 
 module.exports = router;
