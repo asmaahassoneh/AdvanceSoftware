@@ -1,7 +1,7 @@
 const con = require('../config/db');
 const { getUserRole } = require('../services/authService');
 
-// Create a new partner (Admin only)
+
 const createPartner = async (req, res) => {
   const { name, email, phone, website, address, description } = req.body;
 
@@ -29,7 +29,7 @@ const createPartner = async (req, res) => {
   }
 };
 
-// Get all partners
+
 const getAllPartners = async (req, res) => {
   try {
     const result = await con.query('SELECT * FROM partners');
@@ -40,7 +40,7 @@ const getAllPartners = async (req, res) => {
   }
 };
 
-// Get a partner by ID
+
 const getPartnerById = async (req, res) => {
   try {
     const result = await con.query('SELECT * FROM partners WHERE id = $1', [req.params.id]);
@@ -54,7 +54,7 @@ const getPartnerById = async (req, res) => {
   }
 };
 
-// Update a partner (Admin only)
+
 const updatePartner = async (req, res) => {
   const { name, email, phone, website, address, description } = req.body;
 
@@ -88,7 +88,7 @@ const updatePartner = async (req, res) => {
   }
 };
 
-// Delete a partner (Admin only)
+
 const deletePartner = async (req, res) => {
   try {
     const role = getUserRole(req);

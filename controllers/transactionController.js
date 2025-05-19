@@ -1,7 +1,7 @@
 const con = require('../config/db');
 const { getUserRole } = require('../services/authService');
 
-// Create a new transaction
+
 const createTransaction = async (req, res) => {
     const { amount, donor_id, orphan_id, partner_id, type, description, date } = req.body;
 
@@ -12,7 +12,7 @@ const createTransaction = async (req, res) => {
             return res.status(403).json({ error: 'Unauthorized to add a transaction.' });
         }
 
-        const feePercentage = 0.05; // 5% operational fee
+        const feePercentage = 0.05; 
         const feeAmount = amount * feePercentage;
         const netAmount = amount - feeAmount;
 
@@ -33,7 +33,7 @@ const createTransaction = async (req, res) => {
     }
 };
 
-// Get all transactions
+
 const getAllTransactions = async (req, res) => {
     try {
         const result = await con.query('SELECT * FROM transactions');
@@ -44,7 +44,7 @@ const getAllTransactions = async (req, res) => {
     }
 };
 
-// Get transaction by ID
+
 const getTransactionById = async (req, res) => {
     try {
         const result = await con.query('SELECT * FROM transactions WHERE id = $1', [req.params.id]);
@@ -60,7 +60,7 @@ const getTransactionById = async (req, res) => {
     }
 };
 
-// Update a transaction
+
 const updateTransaction = async (req, res) => {
     const { amount, donor_id, orphan_id, partner_id, type, description, date } = req.body;
 
@@ -91,7 +91,7 @@ const updateTransaction = async (req, res) => {
     }
 };
 
-// Delete a transaction
+
 const deleteTransaction = async (req, res) => {
     try {
         const role = getUserRole(req);

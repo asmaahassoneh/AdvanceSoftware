@@ -3,39 +3,39 @@ const { getUserId, getUserRole } = require('../services/authService');
 const { analyzeSentiment } = require('../services/sentimentService');
 
 
-// POST /api/reviews
+
 const leaveReview = async (req, res) => {
     try {
-      // Get user info from the request
+     
       const donor_id = getUserId(req);
       const role = getUserRole(req);
   
-      // Check if the user is a donor
+    
       if (role !== 'donor') {
         return res.status(403).json({ error: 'Only donors can leave reviews' });
       }
   
       const { orphanage_name, rating, comment } = req.body;
   
-      // Validate orphanage name and rating
+      
       if (!orphanage_name || !rating) {
         return res.status(400).json({ error: 'Orphanage name and rating are required' });
       }
   
-      // Get orphanage_id from the orphanage name
+      
       const orphanageRes = await con.query(
         `SELECT id FROM orphanages WHERE name = $1 LIMIT 1`,
         [orphanage_name]
       );
   
-      // If orphanage is not found, return an error
+      
       if (!orphanageRes.rows.length) {
         return res.status(404).json({ error: 'Orphanage not found' });
       }
   
       const orphanage_id = orphanageRes.rows[0].id;
   
-      // Insert the review into the database
+     
       const result = await con.query(
         `INSERT INTO reviews (user_id, orphanage_id, rating, comment)
          VALUES ($1, $2, $3, $4)
@@ -43,15 +43,15 @@ const leaveReview = async (req, res) => {
         [donor_id, orphanage_id, rating, comment || null]
       );
   
-      // Move sentiment analysis here after review is inserted
+    
       const sentimentResult = await analyzeSentiment(comment || '');
       console.log('Sentiment Result:', sentimentResult);
   
-      // Respond with review data and sentiment analysis result
+      
       return res.status(201).json({
         message: 'Review submitted successfully',
         review: result.rows[0],
-        sentiment: sentimentResult || { label: 'unknown', confidence: 0 },  // Fallback for null sentiment
+        sentiment: sentimentResult || { label: 'unknown', confidence: 0 },  
       });
     } catch (err) {
       console.error(err);
@@ -60,7 +60,7 @@ const leaveReview = async (req, res) => {
   };
   
 
-// GET /api/reviews/orphanage/:id
+
 const getReviewsForOrphanage = async (req, res) => {
   const orphanage_id = req.params.id;
 

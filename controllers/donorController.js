@@ -10,7 +10,6 @@ const getDonorDashboard = async (req, res) => {
       return res.status(403).json({ error: 'Access denied: Only donors or sponsors allowed' });
     }
 
-    // 1. Get donations
     const donations = await con.query(
       `SELECT id, type, amount, description, created_at
        FROM donations
@@ -19,7 +18,7 @@ const getDonorDashboard = async (req, res) => {
       [user_id]
     );
 
-    // 2. Get sponsorships
+
     const sponsorships = await con.query(
       `SELECT s.amount, s.frequency, s.status, o.name AS orphan_name, o.photo_url
        FROM sponsorships s
@@ -28,7 +27,6 @@ const getDonorDashboard = async (req, res) => {
       [user_id]
     );
 
-    // 3. Get financial transactions
     const transactions = await con.query(
       `SELECT amount, type, status, date
        FROM transactions
@@ -37,7 +35,6 @@ const getDonorDashboard = async (req, res) => {
       [user_id]
     );
 
-    // 4. Get child updates related to sponsored orphans
     const updates = await con.query(
       `SELECT cu.update_type, cu.content, cu.photo_url, cu.created_at, o.name AS orphan_name
        FROM child_updates cu
