@@ -9,7 +9,7 @@ router.use('/donations', require('./donationRoutes'));
 router.use('/logistics', require('./logistics'));
 router.use('/sponsor', require('./sponsorOrphanRoutes'));
 router.use('/emergency', require('./emergencyCampaignsRoutes'));
-router.use('/donor', require('./donorsRoutes'));
+router.use('/donor', require('./donorRoutes'));
 router.use('/review', require('./reviewRoutes'));
 router.use('/partner', require('./partnerRoutes'));
 router.use('/transaction', require('./transactionRoutes'));
