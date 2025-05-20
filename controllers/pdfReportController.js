@@ -1,5 +1,5 @@
 const con = require('../config/db');  
-const { checkAdmin } = require('../services/authService');
+const { checkAdmin } = require('../middleware/auth');
 const { setupPDF, getChartImage } = require('../services/pdfService');
 
 
