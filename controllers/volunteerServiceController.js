@@ -1,24 +1,19 @@
-
 const con = require('../config/db');
 
-
-const offerService = async (volunteerId, serviceType, description, available) => {
+const offerService = async (volunteerId, category, description, available) => {
   const query = `
     INSERT INTO volunteer_services (volunteer_id, category, description, available)
     VALUES ($1, $2, $3, $4)
     RETURNING *;
   `;
-  try {
-    
-    const result = await con.query(query, [volunteerId, serviceType, description, available]);
 
-   
+  try {
+    const result = await con.query(query, [volunteerId, category, description, available]);
     return result.rows[0];
   } catch (err) {
-  console.error('Error inserting service:', err); 
-  throw err; 
-}
-
+    console.error('Error inserting service:', err);
+    throw new Error('Failed to offer service');
+  }
 };
 
 
@@ -26,7 +21,7 @@ const getAllServices = async (volunteerId) => {
   const query = 'SELECT * FROM volunteer_services WHERE volunteer_id = $1;';
   try {
     const result = await con.query(query, [volunteerId]);
-    return result.rows; 
+    return result.rows;
   } catch (err) {
     console.error('Error fetching services:', err);
     throw new Error('Failed to fetch services');
@@ -34,32 +29,37 @@ const getAllServices = async (volunteerId) => {
 };
 
 
-const getMatchingHelpRequests = async (volunteerId) => {
+
+const getMatchingHelpRequests = async (req, res) => {
   try {
-    const serviceTypesResult = await con.query(
-      'SELECT DISTINCT category FROM volunteer_services WHERE volunteer_id = $1 AND available = true',
-      [volunteerId]
-    );
-    const serviceTypes = serviceTypesResult.rows.map(row => row.category);
+    const { rows } = await con.query(`
+      SELECT 
+        vs.volunteer_id,
+        hr.id AS help_request_id,
+        hr.title,
+        hr.description,
+        hr.category
+      FROM help_requests hr
+      JOIN volunteer_services vs 
+        ON LOWER(TRIM(hr.category)) = LOWER(TRIM(vs.category))
+      WHERE hr.status = 'pending' AND vs.available = true
+    `);
 
-    if (serviceTypes.length === 0) return [];
+    res.status(200).json({
+      message: `${rows.length} match(es) found.`,
+      matches: rows
+    });
 
-    const placeholders = serviceTypes.map((_, i) => `$${i + 1}`).join(',');
-    const helpRequestsResult = await con.query(
-      `SELECT * FROM help_requests WHERE category IN (${placeholders})`,
-      serviceTypes
-    );
-
-    return helpRequestsResult.rows;
-  } catch (err) {
-    console.error('Error fetching matching help requests:', err);
-    throw err;
+  } catch (error) {
+    console.error('Error in getMatchingHelpRequests:', error.stack || error);
+    res.status(500).json({ error: 'Server error while fetching matches.' });
   }
 };
+
 
 module.exports = {
   offerService,
   getAllServices,
-  getMatchingHelpRequests
+  getMatchingHelpRequests 
 };
 
