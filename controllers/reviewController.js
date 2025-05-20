@@ -1,5 +1,5 @@
 const con = require('../config/db');
-const { getUserId, getUserRole } = require('../services/authService');
+const { getUserId, getUserRole } = require('../middleware/auth');
 const { analyzeSentiment } = require('../services/sentimentService');
 
 
