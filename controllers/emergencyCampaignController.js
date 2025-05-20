@@ -1,6 +1,6 @@
 const con = require('../config/db'); 
 const nodemailer = require('nodemailer');
-const { getUserId, getUserRole } = require('../services/authService');
+const { getUserId, getUserRole } = require('../middleware/auth');
 
 const createCampaign = async (req, res) => {
   const { orphanage_name, title, description, target_amount } = req.body;
