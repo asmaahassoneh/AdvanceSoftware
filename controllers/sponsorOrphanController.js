@@ -1,5 +1,5 @@
 const con = require('../config/db');
-const { getUserRole, getUserId } = require('../services/authService'); 
+const { getUserRole, getUserId } = require('../middleware/auth'); 
 
 const sponsorOrphan = async (req, res) => {
   const { orphan_id, amount, frequency } = req.body;
