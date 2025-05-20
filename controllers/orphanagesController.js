@@ -1,4 +1,4 @@
-const { getUserRole } = require('../services/authService');
+const { getUserRole } = require('../middleware/auth');
 const con = require('../config/db');
 
 
