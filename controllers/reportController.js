@@ -1,5 +1,5 @@
 const con = require('../config/db');  
-const { getUserRole } = require('../services/authService');
+const { getUserRole } = require('../middleware/auth');
 
 
 const addReport = async (req, res) => {
