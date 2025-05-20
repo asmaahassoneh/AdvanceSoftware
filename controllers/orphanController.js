@@ -1,5 +1,5 @@
 const con = require('../config/db');  
-const { getUserRole } = require('../services/authService');
+const { getUserRole } = require('../middleware/auth');
 
 const registerOrphan = async (req, res) => {
     const { name, age, health_status, education_status, photo_url, orphanage_name } = req.body;
