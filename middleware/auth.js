@@ -1,19 +1,6 @@
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const validator = require('validator');
-
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const isValidEmail = (email) => validator.isEmail(email);
-
-const checkAdmin = (req, res) => {
-  const role = getUserRole(req);
-  if (role !== 'admin') {
-    res.status(403).json({ message: 'Access denied' });
-    return false;
-  }
-  return true;
-};
 const getUserRole = (req) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) throw new Error('Missing token');
@@ -28,35 +15,34 @@ const getUserId = (req) => {
   return decoded.id;
 };
 
-
-const hashPassword = async (password) => {
-  return await bcrypt.hash(password, 10);
+const checkAdmin = (req, res, next) => {
+  try {
+    const role = getUserRole(req);
+    if (role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
 };
 
-const comparePassword = async (plain, hash) => {
-  return await bcrypt.compare(plain, hash);
-};
+const authenticate = (req, res, next) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    if (!token) return res.status(401).json({ message: 'Missing token' });
 
-const generateToken = (payload, expiresIn = '2h') => {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn });
-};
-
-const verifyToken = (token) => {
-  return new Promise((resolve, reject) => {
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-      if (err) return reject(err);
-      resolve(decoded);
-    });
-  });
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded; 
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
 };
 
 module.exports = {
-  isValidEmail,
-  hashPassword,
-  comparePassword,
-  generateToken,
-  verifyToken,
   getUserRole,
   getUserId,
   checkAdmin,
+  authenticate,
 };
