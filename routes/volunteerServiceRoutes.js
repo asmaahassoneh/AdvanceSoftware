@@ -7,10 +7,12 @@ const volunteerServiceController = require('../controllers/volunteerServiceContr
 router.post('/offer', verifyToken, async (req, res) => {
   try {
     const volunteerId = req.user.id;
-    const { serviceType, description, available } = req.body;
+
+    // ✅ CHANGED: serviceType → category
+    const { category, description, available } = req.body;
 
     const newService = await volunteerServiceController.offerService(
-      volunteerId, serviceType, description, available
+      volunteerId, category, description, available
     );
 
     res.status(201).json({
@@ -40,23 +42,8 @@ router.get('/my-services', verifyToken, async (req, res) => {
   }
 });
 
-router.get('/matching-help-requests', verifyToken, async (req, res) => {
-  try {
-    const volunteerId = req.user.id;
 
-    const matches = await volunteerServiceController.getMatchingHelpRequests(volunteerId);
-
-    res.status(200).json({
-      message: 'Matching help requests fetched successfully',
-      matches
-    });
-  } catch (err) {
-    res.status(500).json({
-      message: 'Failed to fetch matching help requests',
-      error: err.message
-    });
-  }
-});
-
+// Add the route
+router.get('/matches', volunteerServiceController.getMatchingHelpRequests);
 
 module.exports = router;
